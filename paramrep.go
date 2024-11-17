@@ -9,12 +9,10 @@ import (
 )
 
 func main() {
-	// Флаги программы
 	payload := flag.String("p", "", "Payload to replace parameter values (required)")
 	inputFile := flag.String("i", "", "Input file with URLs (optional, stdin is used if not provided)")
 	outputFile := flag.String("o", "", "Output file to write results (optional, stdout is used if not provided)")
 
-	// Кастомный вывод хелпа
 	flag.Usage = func() {
 		fmt.Println("Usage of paramrep:")
 		fmt.Println("  -i string")
@@ -34,20 +32,17 @@ func main() {
 
 	flag.Parse()
 
-	// Если не указаны аргументы, показываем хелп
 	if len(os.Args) == 1 {
 		flag.Usage()
 		os.Exit(0)
 	}
 
-	// Проверяем, указан ли обязательный флаг -p
 	if *payload == "" {
 		fmt.Println("Error: -p <payload> is required.")
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	// Определяем источник ввода (stdin или файл)
 	var inputScanner *bufio.Scanner
 	if *inputFile != "" {
 		file, err := os.Open(*inputFile)
@@ -61,7 +56,6 @@ func main() {
 		inputScanner = bufio.NewScanner(os.Stdin)
 	}
 
-	// Определяем место вывода (stdout или файл)
 	var outputWriter *os.File
 	if *outputFile != "" {
 		file, err := os.Create(*outputFile)
@@ -75,7 +69,6 @@ func main() {
 		outputWriter = os.Stdout
 	}
 
-	// Основной процесс обработки URL
 	for inputScanner.Scan() {
 		rawURL := inputScanner.Text()
 		parsedURL, err := url.Parse(rawURL)
@@ -84,19 +77,15 @@ func main() {
 			continue
 		}
 
-		// Получаем параметры URL
 		queryParams := parsedURL.Query()
 
-		// Генерируем URL с заменой каждого параметра на пейлоад
 		for key := range queryParams {
 			originalValue := queryParams.Get(key)
 
-			// Заменяем только текущий параметр на пейлоад
 			queryParams.Set(key, *payload)
 			parsedURL.RawQuery = queryParams.Encode()
 			fmt.Fprintln(outputWriter, parsedURL.String())
 
-			// Возвращаем оригинальное значение
 			queryParams.Set(key, originalValue)
 		}
 	}
