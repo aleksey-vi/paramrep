@@ -22,10 +22,10 @@ func main() {
 		fmt.Println("  -p string")
 		fmt.Println("      Payload to replace parameter values (required)")
 		fmt.Println("\nExamples:")
-		fmt.Println("  echo \"https://example.com?param1=1&param2=2\" | paramrep -p PAYLOAD")
+		fmt.Println("  echo \"https://example.com/?param1=1&param2=2\" | paramrep -p PAYLOAD")
 		fmt.Println("  Output:")
-		fmt.Println("    https://example.com?param1=PAYLOAD&param2=2")
-		fmt.Println("    https://example.com?param1=1&param2=PAYLOAD")
+		fmt.Println("    https://example.com/?param1=PAYLOAD&param2=2")
+		fmt.Println("    https://example.com/?param1=1&param2=PAYLOAD")
 		fmt.Println("\n  paramrep -p PAYLOAD -i input.txt -o output.txt")
 		fmt.Println("  Processes URLs from input.txt and writes results to output.txt.")
 	}
