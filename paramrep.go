@@ -92,7 +92,6 @@ func main() {
 			continue
 		}
 
-		// Inject payloads into query parameters
 		queryParams := parsedURL.Query()
 		for key := range queryParams {
 			originalValue := queryParams.Get(key)
@@ -108,9 +107,7 @@ func main() {
 		if *injectPath {
 			pathSegments := strings.Split(parsedURL.Path, "/")
 
-			// Проверка: если количество сегментов больше одного, корректируем инъекцию
 			if len(pathSegments) > 2 {
-				// 1. Инъекция пейлоада в начало пути (замена каждого сегмента по очереди)
 				for i := 1; i < len(pathSegments); i++ {
 					if pathSegments[i] != "" {
 						for _, payload := range payloads {
@@ -122,7 +119,6 @@ func main() {
 					}
 				}
 
-				// 2. Добавляем payload в конец каждого сегмента без вставки между ними
 				for i := 1; i < len(pathSegments); i++ {
 					if pathSegments[i] != "" {
 						for _, payload := range payloads {
@@ -134,15 +130,12 @@ func main() {
 					}
 				}
 
-				// 3. Добавляем payload в конец всего пути через слэш
 				for _, payload := range payloads {
 					newPath := strings.Join(pathSegments, "/") + "/" + payload
-					// Убираем лишние слэши, чтобы не было конструкций типа "//"
 					newPath = strings.ReplaceAll(newPath, "//", "/")
 					fmt.Fprintln(outputWriter, parsedURL.Scheme+"://"+parsedURL.Host+newPath)
 				}
 			} else {
-				// Если сегментов меньше или равно одному, просто выполняем стандартные операции
 				for i := 1; i < len(pathSegments); i++ {
 					if pathSegments[i] != "" {
 						for _, payload := range payloads {
