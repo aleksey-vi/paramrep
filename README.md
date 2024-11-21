@@ -21,7 +21,7 @@ The utility accepts arguments through flags. Here are the key options:
 
 ### Examples
 
-#### Process URLs from a file:
+- Process URLs from a file:
 
 Process a list of URLs from the `input.txt` file and save the results to `output.txt`:
 
@@ -29,13 +29,13 @@ Process a list of URLs from the `input.txt` file and save the results to `output
 paramrep -p PAYLOAD -i input.txt -o output.txt
 ```
 
-#### Process URLs from a pipe line:
+- Process URLs from a pipe line:
 
 ```
 cat url_list | paramrep -p PAYLOAD
 ```
 
-#### Process URLs from a string:
+- Process URLs from a string:
 
 ```
 echo "https://example.com/?param1=1&param2=2" | paramrep -p PAYLOAD
