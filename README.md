@@ -1,6 +1,6 @@
 # Paramrep
 
-`paramrep` is a utility for replacing parameter values in URLs. It can process input from a file or `stdin` and output results to a file or `stdout`.
+`paramrep` is a utility for replacing parameter values in URLs and segments path. It can process input from a file or `stdin` and output results to a file or `stdout`.
 
 ## Installation
 
@@ -18,38 +18,64 @@ The utility accepts arguments through flags. Here are the key options:
 - `-p <payload>` (required): The value to replace parameter values in the URL.
 - `-i <input_file>`: Input file with URLs (optional; defaults to `stdin` if not provided).
 - `-o <output_file>`: Output file for results (optional; defaults to `stdout` if not provided).
+- `-path`: Inject payloads into URL path segments.
+- `-pl <payload list>`: File with multiple payloads (mutually exclusive with -p)
 
 ### Examples
 
-- Process URLs from a file:
-
-Process a list of URLs from the `input.txt` file and save the results to `output.txt`:
+#### Process URLs with flag `-p`:
 
 ```
-paramrep -p PAYLOAD -i input.txt -o output.txt
-```
-
-- Process URLs from a pipe line:
-
-```
-cat url_list | paramrep -p PAYLOAD
-```
-
-- Process URLs from a string:
-
-```
-echo "https://example.com/?param1=1&param2=2" | paramrep -p PAYLOAD
+echo "https://example.com/1/?param1=1&param2=2" | paramrep -p PAYLOAD
 ```
 
 
-- Contents of `input.txt`:<br>
-  https://example.com?param1=1&param2=2  <br>
-  https://test.com?foo=bar&baz=qux  <br> <br>
-- Contents of `output.txt` after execution:<br>
-  https://example.com/?param1=PAYLOAD&param2=2  <br>
-  https://example.com/?param1=1&param2=PAYLOAD  <br>
-  https://test.com/?foo=PAYLOAD&baz=qux  <br>
-  https://test.com/?foo=bar&baz=PAYLOAD  <br>
+Contents after execution:
+
+```
+https://example.com/1/?param1=PAYLOAD&param2=2 
+https://example.com/1/?param1=1&param2=PAYLOAD 
+```
+
+
+#### Process URLs from a file:
+
+Process URLs from payloads the `payloads.txt` file and save the results to `output.txt`:
+
+```
+paramrep -pl payloads_list.txt -i input.txt -o output.txt
+```
+
+Contents after execution:
+
+```
+https://example.com:9443/1/2/?param1=1&param2=PAYLOAD1
+https://example.com:9443/1/2/?param1=1&param2=PAYLOAD2
+https://example.com:9443/1/2/?param1=PAYLOAD1&param2=2
+https://example.com:9443/1/2/?param1=PAYLOAD2&param2=2
+```
+
+
+#### Process URLs with flag `-path`:
+
+```
+echo "https://example.com:9443/1/2/?param1=1&param2=2" | ./paramrep -p OLOLO -path
+```
+
+
+Contents after execution:
+
+```
+https://example.com:9443/1/2/?param1=1&param2=OLOLO
+https://example.com:9443/1/2/?param1=OLOLO&param2=2
+https://example.com:9443/OLOLO
+https://example.com:9443/1/OLOLO
+https://example.com:9443/1OLOLO/2/
+https://example.com:9443/1/2OLOLO/
+https://example.com:9443/1/2/OLOLO
+```
+
+
 
 ## Help
 
